@@ -1,4 +1,6 @@
-# event, event_date, attended
+import datetime
+import sqlite3
+
 
 CREATE_EVENTS_TABLE = """CREATE TABLE IS NOT EXISTS events (
     event TEXT,
@@ -10,3 +12,38 @@ INSERT_EVENT = "INSERT INTO events (event, event_timestamp, attended) VALUES (?,
 SELECT_ALL_EVENTS = "SELECT * FROM events;"
 SELECT_UPCOMING_EVENTS = "SELECT * FROM events WHERE event_timestamp > ?;"
 SELECT_ATTENDED_EVENTS = "SELECT * FROM events WHERE attended = 1;"
+
+
+connection = sqlite3.connect("data.db")
+
+
+def create_tables():
+    with connection:
+        connection.execute(CREATE_EVENTS_TABLE)
+
+
+def add_event(event, event_timestamp):
+    with connection:
+        connection.execute(INSERT_EVENT,(event, event_timestamp))
+
+
+def get_events(upcoming=False):
+    with connection:
+        cursor = connection.cursor()
+        if upcoming:
+            today_timestamp = datetime.datetime.today().timestamp()
+            cursor.execute(SELECT_UPCOMING_EVENTS,(today_timestamp,))
+        else:
+            cursor.execute(SELECT_ALL_EVENTS)
+        return cursor.fetchall()
+
+
+def attend_event():
+    pass
+
+
+def get_attended_events():
+    with connection:
+        cursor = connection.cursor()
+        cursor.execute(SELECT_ATTENDED_EVENTS)
+        return cursor.fetchall()
