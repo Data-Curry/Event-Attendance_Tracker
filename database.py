@@ -12,6 +12,7 @@ INSERT_EVENT = "INSERT INTO events (event, event_timestamp, attended) VALUES (?,
 SELECT_ALL_EVENTS = "SELECT * FROM events;"
 SELECT_UPCOMING_EVENTS = "SELECT * FROM events WHERE event_timestamp > ?;"
 SELECT_ATTENDED_EVENTS = "SELECT * FROM events WHERE attended = 1;"
+SET_EVENT_ATTENDED = "UPDATE events SET attended = 1 WHERE event = ?;"
 
 
 connection = sqlite3.connect("data.db")
@@ -24,7 +25,7 @@ def create_tables():
 
 def add_event(event, event_timestamp):
     with connection:
-        connection.execute(INSERT_EVENT,(event, event_timestamp))
+        connection.execute(INSERT_EVENT, (event, event_timestamp))
 
 
 def get_events(upcoming=False):
@@ -38,8 +39,9 @@ def get_events(upcoming=False):
         return cursor.fetchall()
 
 
-def attend_event():
-    pass
+def attend_event(event):
+    with connection:
+        connection.execute(SET_EVENT_ATTENDED, (event,))
 
 
 def get_attended_events():
