@@ -2,7 +2,7 @@ import datetime
 import sqlite3
 
 
-CREATE_EVENTS_TABLE = """CREATE TABLE IS NOT EXISTS events (
+CREATE_EVENTS_TABLE = """CREATE TABLE IF NOT EXISTS events (
     event TEXT,
     event_timestamp REAL,
     attended INTEGER
@@ -33,7 +33,7 @@ def get_events(upcoming=False):
         cursor = connection.cursor()
         if upcoming:
             today_timestamp = datetime.datetime.today().timestamp()
-            cursor.execute(SELECT_UPCOMING_EVENTS,(today_timestamp,))
+            cursor.execute(SELECT_UPCOMING_EVENTS, (today_timestamp,))
         else:
             cursor.execute(SELECT_ALL_EVENTS)
         return cursor.fetchall()
