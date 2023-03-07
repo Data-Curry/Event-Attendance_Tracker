@@ -4,15 +4,20 @@ import sqlite3
 
 CREATE_EVENTS_TABLE = """CREATE TABLE IF NOT EXISTS events (
     event TEXT,
-    event_timestamp REAL,
-    attended INTEGER
+    event_timestamp REAL
+);"""
+CREATE_ATTENDED_TABLE = """CREATE TABLE IF NOT EXISTS attended (
+    person TEXT,
+    event TEXT
 );"""
 
-INSERT_EVENT = "INSERT INTO events (event, event_timestamp, attended) VALUES (?, ?, 0);"
+INSERT_EVENT = "INSERT INTO events (event, event_timestamp) VALUES (?, ?);"
 SELECT_ALL_EVENTS = "SELECT * FROM events;"
 SELECT_UPCOMING_EVENTS = "SELECT * FROM events WHERE event_timestamp > ?;"
-SELECT_ATTENDED_EVENTS = "SELECT * FROM events WHERE attended = 1;"
+SELECT_ATTENDED_EVENTS = "SELECT * FROM attended WHERE person = ?;"
+INSERT_ATTENDED_EVENT = "INSERT INTO attended (person, event) VALUES (?, ?)"
 SET_EVENT_ATTENDED = "UPDATE events SET attended = 1 WHERE event = ?;"
+DELETE_EVENT = "DELETE FROM events WHERE event = ?;"
 
 
 connection = sqlite3.connect("data.db")
@@ -21,6 +26,7 @@ connection = sqlite3.connect("data.db")
 def create_tables():
     with connection:
         connection.execute(CREATE_EVENTS_TABLE)
+        connection.execute(CREATE_ATTENDED_TABLE)
 
 
 def add_event(event, event_timestamp):
@@ -39,13 +45,14 @@ def get_events(upcoming=False):
         return cursor.fetchall()
 
 
-def attend_event(event):
+def attend_event(person, event):
     with connection:
-        connection.execute(SET_EVENT_ATTENDED, (event,))
+        connection.execute(DELETE_EVENT, (event,))
+        connection.execute(INSERT_ATTENDED_EVENT, (person, event))
 
 
-def get_attended_events():
+def get_attended_events(person):
     with connection:
         cursor = connection.cursor()
-        cursor.execute(SELECT_ATTENDED_EVENTS)
+        cursor.execute(SELECT_ATTENDED_EVENTS, (person,))
         return cursor.fetchall()

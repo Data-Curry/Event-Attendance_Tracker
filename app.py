@@ -35,8 +35,22 @@ def print_events(events, heading):
 
 def prompt_attend_event():
     event = input("Enter name of event: ")
-    database.attend_event(event)
-    print(f"{event} attended.")
+    person = input("Enter the name of the attendee: ")
+    database.attend_event(person, event)
+    print(f"{event} attended by {person}.")
+
+
+def prompt_get_attended_events():
+    person = input("Enter person's name: ")
+    events = database.get_attended_events(person,)
+    print_attended_events(events, person)
+
+
+def print_attended_events(events, person):
+    print(f"-- {person}'s Attended Events --")
+    for event in events:
+        print(f"{event[1]}")
+    print("---- \n")
 
 
 while (user_input := input(menu)) != "6":
@@ -53,8 +67,6 @@ while (user_input := input(menu)) != "6":
     elif user_input == "4":
         prompt_attend_event()
     elif user_input == "5":
-        events = database.get_attended_events()
-        heading = "Attended"
-        print_events(events, heading)
+        prompt_get_attended_events()
     else:
         print("Invalid input, please try again.")
