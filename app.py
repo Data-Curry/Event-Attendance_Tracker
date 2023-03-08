@@ -7,7 +7,8 @@ menu = """Please select one of the following options:
 3) View all events.
 4) Attend an event.
 5) View attended events.
-6) Exit.
+6) Add new person to this app.
+7) Exit.
 
 Your selection: """
 welcome = "Welcome to the Event Attendance Tracker."
@@ -26,18 +27,20 @@ def prompt_add_event():
     database.add_event(event, timestamp)
 
 
-def print_events(events, heading):
+def print_event_list(events, heading):
     print(f"-- {heading} Events --")
-    for event in events:
-        print(f"{event[0]} (on {event[1]})")
+    for _id, event, event_timestamp in events:
+        event_time = datetime.datetime.fromtimestamp(event_timestamp)
+        human_time = event_time.strftime("%b %d %y")
+        print(f"{_id}: {event} (on {human_time})")
     print("---- \n")
 
 
 def prompt_attend_event():
-    event = input("Enter name of event: ")
-    person = input("Enter the name of the attendee: ")
-    database.attend_event(person, event)
-    print(f"{event} attended by {person}.")
+    person_name = input("Enter the name of the attendee: ")
+    event_id = input("Enter event ID: ")
+    database.attend_event(person_name, event_id)
+    print(f"Event {event_id} attended by {person_name}.")
 
 
 def prompt_get_attended_events():
@@ -53,20 +56,27 @@ def print_attended_events(events, person):
     print("---- \n")
 
 
-while (user_input := input(menu)) != "6":
+def prompt_add_person():
+    person_name = input("Enter name: ")
+    database.add_person(person_name)
+
+
+while (user_input := input(menu)) != "7":
     if user_input == "1":
         prompt_add_event()
     elif user_input == "2":
         events = database.get_events(upcoming=True)
         heading = "Upcoming"
-        print_events(events, heading)
+        print_event_list(events, heading)
     elif user_input == "3":
         events = database.get_events()
         heading = "All"
-        print_events(events, heading)
+        print_event_list(events, heading)
     elif user_input == "4":
         prompt_attend_event()
     elif user_input == "5":
         prompt_get_attended_events()
+    elif user_input == "6":
+        prompt_add_person()
     else:
         print("Invalid input, please try again.")
