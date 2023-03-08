@@ -31,8 +31,8 @@ def print_event_list(events, heading):
     print(f"-- {heading} Events --")
     for _id, event, event_timestamp in events:
         event_time = datetime.datetime.fromtimestamp(event_timestamp)
-        human_time = event_time.strftime("%b %d %y")
-        print(f"{_id}: {event} (on {human_time})")
+        human_time = event_time.strftime("%b %d %Y")
+        print(f"{_id}: {event} ({human_time})")
     print("---- \n")
 
 
@@ -51,8 +51,10 @@ def prompt_get_attended_events():
 
 def print_attended_events(events, person):
     print(f"-- {person}'s Attended Events --")
-    for event in events:
-        print(f"{event[1]}")
+    for _id, event, event_timestamp in events:
+        event_time = datetime.datetime.fromtimestamp(event_timestamp)
+        human_time = event_time.strftime("%b %d %Y")
+        print(f"{_id}: {event} ({human_time})")
     print("---- \n")
 
 

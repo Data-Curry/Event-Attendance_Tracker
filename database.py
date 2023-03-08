@@ -22,7 +22,12 @@ INSERT_PERSON = "INSERT INTO people (person_name) VALUES (?);"
 INSERT_EVENT = "INSERT INTO events (event, event_timestamp) VALUES (?, ?);"
 SELECT_ALL_EVENTS = "SELECT * FROM events;"
 SELECT_UPCOMING_EVENTS = "SELECT * FROM events WHERE event_timestamp > ?;"
-SELECT_ATTENDED_EVENTS = "SELECT * FROM attended WHERE person_name = ?;"
+SELECT_ATTENDED_EVENTS = """SELECT _id, event, event_timestamp
+    FROM events
+    JOIN attended ON _id = attended.event_id
+    JOIN people ON people.person_name = attended.person_name
+    WHERE people.person_name = ?
+    ORDER BY event_timestamp ASC;"""
 INSERT_ATTENDED_EVENT = "INSERT INTO attended (person_name, event_id) VALUES (?, ?)"
 SET_EVENT_ATTENDED = "UPDATE events SET attended = 1 WHERE event = ?;"
 DELETE_EVENT = "DELETE FROM events WHERE event = ?;"
