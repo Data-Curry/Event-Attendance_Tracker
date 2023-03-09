@@ -19,7 +19,9 @@ CREATE_PEOPLE_TABLE = """CREATE TABLE IF NOT EXISTS people (
 );"""
 
 INSERT_PERSON = "INSERT INTO people (person_name) VALUES (?);"
+SELECT_PERSON = "SELECT * FROM people WHERE person_name = ?;"
 INSERT_EVENT = "INSERT INTO events (event, event_timestamp) VALUES (?, ?);"
+SELECT_EVENT = "SELECT _id FROM events WHERE _id = ?;"
 SELECT_ALL_EVENTS = "SELECT * FROM events;"
 SELECT_ALL_EVENTS_CHRONOLOGICALLY = "SELECT * FROM events ORDER BY event_timestamp ASC;"
 SELECT_UPCOMING_EVENTS = "SELECT * FROM events WHERE event_timestamp > ? ORDER BY event_timestamp ASC;"
@@ -81,4 +83,18 @@ def get_attended_events(person):
     with connection:
         cursor = connection.cursor()
         cursor.execute(SELECT_ATTENDED_EVENTS, (person,))
+        return cursor.fetchall()
+
+
+def get_person(person):
+    with connection:
+        cursor = connection.cursor()
+        cursor.execute(SELECT_PERSON, (person,))
+        return cursor.fetchall()
+
+
+def get_event(event_id):
+    with connection:
+        cursor = connection.cursor()
+        cursor.execute(SELECT_EVENT, (event_id,))
         return cursor.fetchall()

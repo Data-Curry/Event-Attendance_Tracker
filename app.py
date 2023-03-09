@@ -39,9 +39,17 @@ def print_event_list(events, heading):
 
 def prompt_attend_event():
     person_name = input("Enter the name of the attendee: ")
-    event_id = input("Enter event ID: ")
-    database.attend_event(person_name, event_id)
-    print(f"Event {event_id} attended by {person_name}.")
+    person_exists = database.get_person(person_name)
+    if person_exists:
+        event_id = input("Enter event ID: ")
+        event_exists = database.get_event(event_id)
+        if event_exists:
+            database.attend_event(person_name, event_id)
+            print(f"Event {event_id} attended by {person_name}.")
+        else:
+            print(f"Event with ID {event_id} is not found in the database.\n")
+    else:
+        print(f"{person_name} is not found in the database.\n")
 
 
 def prompt_add_person():
@@ -68,12 +76,16 @@ while (user_input := input(menu)) != "8":
         prompt_attend_event()
     elif user_input == "6":
         person = input("Enter person's name: ")
-        events = database.get_attended_events(person, )
-        if events:
-            heading = f"{person}'s Attended"
-            print_event_list(events, heading)
+        person_exists = database.get_person(person)
+        if person_exists:
+            events = database.get_attended_events(person, )
+            if events:
+                heading = f"{person}'s Attended"
+                print_event_list(events, heading)
+            else:
+                print(f"{person} hasn't attended any events.\n")
         else:
-            print(f"{person} hasn't attended any events.")
+            print(f"{person} is not found in the database.\n")
     elif user_input == "7":
         prompt_add_person()
     else:
