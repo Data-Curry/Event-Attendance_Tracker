@@ -4,11 +4,12 @@ import database
 menu = """Please select one of the following options:
 1) Add new event.
 2) View upcoming events.
-3) View all events.
-4) Attend an event.
-5) View attended events.
-6) Add new person to this app.
-7) Exit.
+3) View all events chronologically.
+4) View all events by ID.
+5) Attend an event.
+6) View attended events.
+7) Add new person to this app.
+8) Exit.
 
 Your selection: """
 welcome = "Welcome to the Event Attendance Tracker."
@@ -48,7 +49,7 @@ def prompt_add_person():
     database.add_person(person_name)
 
 
-while (user_input := input(menu)) != "7":
+while (user_input := input(menu)) != "8":
     if user_input == "1":
         prompt_add_event()
     elif user_input == "2":
@@ -56,12 +57,16 @@ while (user_input := input(menu)) != "7":
         heading = "Upcoming"
         print_event_list(events, heading)
     elif user_input == "3":
-        events = database.get_events()
+        events = database.get_events_chronologically()
         heading = "All"
         print_event_list(events, heading)
     elif user_input == "4":
-        prompt_attend_event()
+        events = database.get_events()
+        heading = "All"
+        print_event_list(events, heading)
     elif user_input == "5":
+        prompt_attend_event()
+    elif user_input == "6":
         person = input("Enter person's name: ")
         events = database.get_attended_events(person, )
         if events:
@@ -69,7 +74,7 @@ while (user_input := input(menu)) != "7":
             print_event_list(events, heading)
         else:
             print(f"{person} hasn't attended any events.")
-    elif user_input == "6":
+    elif user_input == "7":
         prompt_add_person()
     else:
         print("Invalid input, please try again.")
