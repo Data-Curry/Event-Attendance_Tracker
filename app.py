@@ -43,21 +43,6 @@ def prompt_attend_event():
     print(f"Event {event_id} attended by {person_name}.")
 
 
-def prompt_get_attended_events():
-    person = input("Enter person's name: ")
-    events = database.get_attended_events(person,)
-    print_attended_events(events, person)
-
-
-def print_attended_events(events, person):
-    print(f"-- {person}'s Attended Events --")
-    for _id, event, event_timestamp in events:
-        event_time = datetime.datetime.fromtimestamp(event_timestamp)
-        human_time = event_time.strftime("%b %d %Y")
-        print(f"{_id}: {event} ({human_time})")
-    print("---- \n")
-
-
 def prompt_add_person():
     person_name = input("Enter name: ")
     database.add_person(person_name)
@@ -77,7 +62,13 @@ while (user_input := input(menu)) != "7":
     elif user_input == "4":
         prompt_attend_event()
     elif user_input == "5":
-        prompt_get_attended_events()
+        person = input("Enter person's name: ")
+        events = database.get_attended_events(person, )
+        if events:
+            heading = f"{person}'s Attended"
+            print_event_list(events, heading)
+        else:
+            print(f"{person} hasn't attended any events.")
     elif user_input == "6":
         prompt_add_person()
     else:
