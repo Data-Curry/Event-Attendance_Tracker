@@ -1,22 +1,59 @@
 import datetime
 import database
 
-menu = """Please select one of the following options:
-1) Add new event.
-2) View upcoming events.
-3) View all events chronologically.
-4) View all events by ID.
-5) Attend an event.
-6) View attended events.
-7) Add new person to this app.
-8) Exit.
+import tkinter as tk
+from tkinter import ttk
+from windows import set_dpi_awareness
 
-Your selection: """
-welcome = "Welcome to the Event Attendance Tracker."
+set_dpi_awareness()
 
 
-print(welcome)
+root = tk.Tk()
+root.geometry("600x400")
+root.resizable(False, False)
+root.title("Event Attendance Tracker")
+
 database.create_tables()
+
+
+def input_2():
+    events = database.get_events(upcoming=True)
+    heading = "Upcoming"
+    print_event_list(events, heading)
+
+
+def input_3():
+    events = database.get_events_chronologically()
+    heading = "All"
+    print_event_list(events, heading)
+
+
+def input_4():
+    events = database.get_events()
+    heading = "All"
+    print_event_list(events, heading)
+
+
+def input_6():
+    person = input("Enter person's name: ")
+    person_exists = database.get_person(person)
+    if person_exists:
+        events = database.get_attended_events(person, )
+        if events:
+            heading = f"{person}'s Attended"
+            print_event_list(events, heading)
+        else:
+            print(f"{person} hasn't attended any events.\n")
+    else:
+        print(f"{person} is not found in the database.\n")
+
+
+def input_7():
+    pass
+
+
+def input_8():
+    pass
 
 
 def prompt_add_event():
@@ -57,36 +94,30 @@ def prompt_add_person():
     database.add_person(person_name)
 
 
-while (user_input := input(menu)) != "8":
-    if user_input == "1":
-        prompt_add_event()
-    elif user_input == "2":
-        events = database.get_events(upcoming=True)
-        heading = "Upcoming"
-        print_event_list(events, heading)
-    elif user_input == "3":
-        events = database.get_events_chronologically()
-        heading = "All"
-        print_event_list(events, heading)
-    elif user_input == "4":
-        events = database.get_events()
-        heading = "All"
-        print_event_list(events, heading)
-    elif user_input == "5":
-        prompt_attend_event()
-    elif user_input == "6":
-        person = input("Enter person's name: ")
-        person_exists = database.get_person(person)
-        if person_exists:
-            events = database.get_attended_events(person, )
-            if events:
-                heading = f"{person}'s Attended"
-                print_event_list(events, heading)
-            else:
-                print(f"{person} hasn't attended any events.\n")
-        else:
-            print(f"{person} is not found in the database.\n")
-    elif user_input == "7":
-        prompt_add_person()
-    else:
-        print("Invalid input, please try again.")
+main = ttk.Frame(root, padding=(30, 15))
+main.grid()
+
+# -- Widgets --
+
+add_event_button = ttk.Button(main, text="Add New Event", command=prompt_add_event)
+view_upcoming_events_button = ttk.Button(main, text="View Upcoming Events", command=input_2)
+view_events_chronologically_button = ttk.Button(main, text="View All Events Chronologically", command=input_3)
+view_events_by_id_button = ttk.Button(main, text="View All Events by ID", command=input_4)
+attend_event_button = ttk.Button(main, text="Attend Event", command=prompt_attend_event)
+view_attended_events_button = ttk.Button(main, text="View Attended Events", command=input_6)
+add_person_button = ttk.Button(main, text="Add New Person to this App", command=prompt_add_person)
+exit_app_button = ttk.Button(main, text="Exit App", command=input_8)
+
+# -- Layout --
+
+add_event_button.grid(column=0, row=0, sticky="W", padx=5, pady=5)
+view_upcoming_events_button.grid(column=0, row=1, sticky="W", padx=5, pady=5)
+view_events_chronologically_button.grid(column=0, row=2, sticky="W", padx=5, pady=5)
+view_events_by_id_button.grid(column=0, row=3, sticky="W", padx=5, pady=5)
+attend_event_button.grid(column=0, row=4, sticky="W", padx=5, pady=5)
+view_attended_events_button.grid(column=0, row=5, sticky="W", padx=5, pady=5)
+add_person_button.grid(column=0, row=6, sticky="W", padx=5, pady=5)
+exit_app_button.grid(column=0, row=7, sticky="W", padx=5, pady=5)
+
+
+root.mainloop()
