@@ -5,10 +5,17 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
 import tkinter.font as font
-from scrollable_window import DisplayWindow
 from windows import set_dpi_awareness
+from scrollable_window import ViewItemsByIDDisplayWindow, \
+    ViewEventsChronologicallyDisplayWindow, \
+    ViewUpcomingEventsDisplayWindow, \
+    ViewAttendedEventsDisplayWindow
 
-display_data = ["This is the content of the Display Data Variable"]
+
+attended_events = ()
+upcoming_events = ()
+events_chronologically = ()
+events_by_id = ()
 
 set_dpi_awareness()
 
@@ -138,12 +145,14 @@ class AddEvent(ttk.Frame):
 
 
 class ViewUpcomingEvents(ttk.Frame):
+    global upcoming_events
+
     def __init__(self, container, controller, **kwargs):
         super().__init__(container, **kwargs)
 
         self.upcoming_events = ()
 
-        self.upcoming_events_window = ttk.Frame(self)
+        self.upcoming_events_window = ViewUpcomingEventsDisplayWindow(self)  # scrollable window
         self.upcoming_events_window.grid(column=0, row=1, sticky="NSEW")
 
         upcoming_events_label = ttk.Label(
@@ -171,6 +180,7 @@ class ViewUpcomingEvents(ttk.Frame):
         return final_list
 
     def make_upcoming_event_list(self, events):
+        global upcoming_events
         event_list = []
         for _id, event, event_timestamp in events:
             event_time = datetime.datetime.fromtimestamp(event_timestamp)
@@ -178,30 +188,19 @@ class ViewUpcomingEvents(ttk.Frame):
             list_line = f"{_id}: {event} ({human_time})"
             event_list.append(list_line)
         event_tuple = tuple(event_list)
-        self.upcoming_events = event_tuple + self.upcoming_events
-        self.update_upcoming_events_widgets()
-        print(self.upcoming_events)
-        return self.upcoming_events
-
-    def update_upcoming_events_widgets(self):
-        for event in self.upcoming_events:
-            event_label = ttk.Label(
-                self.upcoming_events_window,
-                text=event,
-                anchor="w",
-                justify="left"
-            )
-
-            event_label.grid(sticky="NSEW")
+        upcoming_events = event_tuple + upcoming_events
+        self.upcoming_events_window.update_upcoming_events_widgets(upcoming_events)
+        print(upcoming_events)
+        return upcoming_events
 
 
 class ViewEventsChronologically(ttk.Frame):
+    global events_chronologically
+
     def __init__(self, container, controller, **kwargs):
         super().__init__(container, **kwargs)
 
-        self.events_chronologically = ()
-
-        self.events_chronologically_window = ttk.Frame(self)
+        self.events_chronologically_window = ViewEventsChronologicallyDisplayWindow(self)  # scrollable window
         self.events_chronologically_window.grid(column=0, row=1, sticky="NSEW")
 
         events_chronologically_label = ttk.Label(
@@ -229,6 +228,7 @@ class ViewEventsChronologically(ttk.Frame):
         return final_list
 
     def make_events_chronologically_list(self, events):
+        global events_chronologically
         event_list = []
         for _id, event, event_timestamp in events:
             event_time = datetime.datetime.fromtimestamp(event_timestamp)
@@ -236,30 +236,19 @@ class ViewEventsChronologically(ttk.Frame):
             list_line = f"{_id}: {event} ({human_time})"
             event_list.append(list_line)
         event_tuple = tuple(event_list)
-        self.events_chronologically = event_tuple + self.events_chronologically
-        self.update_events_chronologically_widgets()
-        print(self.events_chronologically)
-        return self.events_chronologically
-
-    def update_events_chronologically_widgets(self):
-        for event in self.events_chronologically:
-            event_label = ttk.Label(
-                self.events_chronologically_window,
-                text=event,
-                anchor="w",
-                justify="left"
-            )
-
-            event_label.grid(sticky="NSEW")
+        events_chronologically = event_tuple + events_chronologically
+        self.events_chronologically_window.update_events_chronologically_widgets(events_chronologically)
+        print(events_chronologically)
+        return events_chronologically
 
 
 class ViewEventsByID(ttk.Frame):
+    global events_by_id
+
     def __init__(self, container, controller, **kwargs):
         super().__init__(container, **kwargs)
 
-        self.events_by_id = ()
-
-        self.events_by_id_window = ttk.Frame(self)
+        self.events_by_id_window = ViewItemsByIDDisplayWindow(self)  # scrollable window
         self.events_by_id_window.grid(column=0, row=1, sticky="NSEW")
 
         events_by_id_label = ttk.Label(
@@ -289,6 +278,7 @@ class ViewEventsByID(ttk.Frame):
         return final_list
 
     def make_events_by_id_list(self, events):
+        global events_by_id
         event_list = []
         for _id, event, event_timestamp in events:
             event_time = datetime.datetime.fromtimestamp(event_timestamp)
@@ -296,21 +286,10 @@ class ViewEventsByID(ttk.Frame):
             list_line = f"{_id}: {event} ({human_time})"
             event_list.append(list_line)
         event_tuple = tuple(event_list)
-        self.events_by_id = event_tuple + self.events_by_id
-        self.update_events_by_id_widgets()
-        print(self.events_by_id)
-        return self.events_by_id
-
-    def update_events_by_id_widgets(self):
-        for event in self.events_by_id:
-            event_label = ttk.Label(
-                self.events_by_id_window,
-                text=event,
-                anchor="w",
-                justify="left"
-            )
-
-            event_label.grid(sticky="NSEW")
+        events_by_id = event_tuple + events_by_id
+        self.events_by_id_window.update_events_by_id_widgets(events_by_id)  # method in scrollable_window.py
+        print(events_by_id)
+        return events_by_id
 
 
 class AttendEvent(ttk.Frame):
@@ -364,12 +343,14 @@ class AttendEvent(ttk.Frame):
 
 
 class ViewAttendedEvents(ttk.Frame):
+    global attended_events
+
     def __init__(self, container, controller, **kwargs):
         super().__init__(container, **kwargs)
 
         self.attended_events = ()
 
-        self.attended_events_window = ttk.Frame(self)
+        self.attended_events_window = ViewAttendedEventsDisplayWindow(self)  # scrollable window
         self.attended_events_window.grid(column=0, row=2, sticky="NSEW")
 
         self.person = tk.StringVar()
@@ -396,7 +377,7 @@ class ViewAttendedEvents(ttk.Frame):
         return_to_main_menu.grid(column=1, row=3, sticky="W")
 
         for child in self.winfo_children():
-            child.grid_configure(padx=15, pady=5)
+            child.grid_configure(padx=7, pady=2)
 
     def view_attended_events(self):
         person = self.person_value.get()
@@ -405,6 +386,7 @@ class ViewAttendedEvents(ttk.Frame):
         return final_list
 
     def make_attended_events_list(self, events):
+        global attended_events
         event_list = []
         for _id, event, event_timestamp in events:
             event_time = datetime.datetime.fromtimestamp(event_timestamp)
@@ -412,21 +394,10 @@ class ViewAttendedEvents(ttk.Frame):
             list_line = f"{_id}: {event} ({human_time})"
             event_list.append(list_line)
         event_tuple = tuple(event_list)
-        self.attended_events = event_tuple + self.attended_events
-        self.update_attended_events_widgets()
-        print(self.attended_events)
-        return self.attended_events
-
-    def update_attended_events_widgets(self):
-        for event in self.attended_events:
-            event_label = ttk.Label(
-                self.attended_events_window,
-                text=event,
-                anchor="w",
-                justify="left"
-            )
-
-            event_label.grid(sticky="NSEW")
+        attended_events = event_tuple + attended_events
+        self.attended_events_window.update_attended_events_widgets(attended_events)
+        print(attended_events)
+        return attended_events
 
 
 class AddNewPerson(ttk.Frame):
