@@ -182,16 +182,20 @@ class ViewUpcomingEvents(ttk.Frame):
     def make_upcoming_event_list(self, events):
         global upcoming_events
         event_list = []
+        no_duplication = ()
         for _id, event, event_timestamp in events:
             event_time = datetime.datetime.fromtimestamp(event_timestamp)
             human_time = event_time.strftime("%b %d %Y")
             list_line = f"{_id}: {event} ({human_time})"
             event_list.append(list_line)
         event_tuple = tuple(event_list)
-        upcoming_events = event_tuple + upcoming_events
-        self.upcoming_events_window.update_upcoming_events_widgets(upcoming_events)
-        print(upcoming_events)
-        return upcoming_events
+        if event_tuple == upcoming_events:                  # if display button is clicked again,
+            return no_duplication                           # don't return the event list again
+        else:
+            upcoming_events = event_tuple
+            self.upcoming_events_window.update_upcoming_events_widgets(upcoming_events)
+            print(upcoming_events)
+            return upcoming_events
 
 
 class ViewEventsChronologically(ttk.Frame):
@@ -230,16 +234,20 @@ class ViewEventsChronologically(ttk.Frame):
     def make_events_chronologically_list(self, events):
         global events_chronologically
         event_list = []
+        no_duplication = ()
         for _id, event, event_timestamp in events:
             event_time = datetime.datetime.fromtimestamp(event_timestamp)
             human_time = event_time.strftime("%b %d %Y")
             list_line = f"{_id}: {event} ({human_time})"
             event_list.append(list_line)
         event_tuple = tuple(event_list)
-        events_chronologically = event_tuple + events_chronologically
-        self.events_chronologically_window.update_events_chronologically_widgets(events_chronologically)
-        print(events_chronologically)
-        return events_chronologically
+        if event_tuple == events_chronologically:          # if display button is clicked again,
+            return no_duplication                          # don't return the event list again
+        else:
+            events_chronologically = event_tuple
+            self.events_chronologically_window.update_events_chronologically_widgets(events_chronologically)
+            print(events_chronologically)
+            return events_chronologically
 
 
 class ViewEventsByID(ttk.Frame):
@@ -280,16 +288,20 @@ class ViewEventsByID(ttk.Frame):
     def make_events_by_id_list(self, events):
         global events_by_id
         event_list = []
+        no_duplication = ()
         for _id, event, event_timestamp in events:
             event_time = datetime.datetime.fromtimestamp(event_timestamp)
             human_time = event_time.strftime("%b %d %Y")
             list_line = f"{_id}: {event} ({human_time})"
             event_list.append(list_line)
         event_tuple = tuple(event_list)
-        events_by_id = event_tuple + events_by_id
-        self.events_by_id_window.update_events_by_id_widgets(events_by_id)  # method in scrollable_window.py
-        print(events_by_id)
-        return events_by_id
+        if event_tuple == events_by_id:          # if the display button is clicked again,
+            return no_duplication                # don't return the event list again
+        else:
+            events_by_id = event_tuple + events_by_id
+            self.events_by_id_window.update_events_by_id_widgets(events_by_id)  # method in scrollable_window.py
+            print(events_by_id)
+            return events_by_id
 
 
 class AttendEvent(ttk.Frame):
@@ -349,6 +361,7 @@ class ViewAttendedEvents(ttk.Frame):
         super().__init__(container, **kwargs)
 
         self.attended_events = ()
+        self.previous_person = ""
 
         self.attended_events_window = ViewAttendedEventsDisplayWindow(self)  # scrollable window
         self.attended_events_window.grid(column=0, row=2, sticky="NSEW")
@@ -388,16 +401,20 @@ class ViewAttendedEvents(ttk.Frame):
     def make_attended_events_list(self, events):
         global attended_events
         event_list = []
+        no_duplication = ()
         for _id, event, event_timestamp in events:
             event_time = datetime.datetime.fromtimestamp(event_timestamp)
             human_time = event_time.strftime("%b %d %Y")
             list_line = f"{_id}: {event} ({human_time})"
             event_list.append(list_line)
         event_tuple = tuple(event_list)
-        attended_events = event_tuple + attended_events
-        self.attended_events_window.update_attended_events_widgets(attended_events)
-        print(attended_events)
-        return attended_events
+        if event_tuple == attended_events:              # if display button is clicked again,
+            return no_duplication                       # don't return the event list again
+        else:
+            attended_events = event_tuple
+            self.attended_events_window.update_attended_events_widgets(attended_events)
+            print(attended_events)
+            return attended_events
 
 
 class AddNewPerson(ttk.Frame):
@@ -433,7 +450,7 @@ class AddNewPerson(ttk.Frame):
         if len(person_string) == 0:
             messagebox.showinfo(
                 title="Oops!",
-                message="Make sure you entered the information correctly."
+                message="Make sure you enter a name."
             )
         else:
             database.add_person(person_string)

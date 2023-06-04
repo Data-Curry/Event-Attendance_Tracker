@@ -1,6 +1,8 @@
 import tkinter as tk
 from tkinter import ttk
 
+attended_events_forget = []
+
 
 class ViewUpcomingEventsDisplayWindow(tk.Canvas):                          # This makes View Upcoming Events scrollable
     def __init__(self, container, *args, **kwargs):
@@ -134,7 +136,16 @@ class ViewAttendedEventsDisplayWindow(tk.Canvas):                          # thi
         self.configure(yscrollcommand=scrollbar.set)
         self.yview_moveto(1.0)
 
+    def delete_all_labels(self):
+        global attended_events_forget
+        for label in attended_events_forget:     # iterates through all existing labels
+            label.grid_forget()                  # removes them from the grid one by one
+
+        attended_events_forget = []              # resets the variable
+
     def update_attended_events_widgets(self, attended_events):  # moved here from UpdateAttendedEvents class in app.py
+        global attended_events_forget
+        self.delete_all_labels()                 # clears existing labels from the scrollable window
         for event in attended_events:
             event_label = ttk.Label(
                 self.display_frame,
@@ -142,6 +153,7 @@ class ViewAttendedEventsDisplayWindow(tk.Canvas):                          # thi
                 anchor="w",
                 justify="left"
             )
+            attended_events_forget.append(event_label)   # populates with labels to be deleted when called again
 
             event_label.grid(sticky="NSEW")
 
