@@ -338,6 +338,14 @@ class AttendEvent(ttk.Frame):
         for child in self.winfo_children():
             child.grid_configure(padx=15, pady=15)
 
+    def check_if_person_in_database(self, person_string):
+        person_name = database.get_person(person_string)
+        return person_name
+
+    def check_if_event_in_database(self, event_id_string):
+        event = database.get_event(event_id_string)
+        return event
+
     def attend_event(self, person, event_id):
         person_string = str(person)
         event_id_string = str(event_id)
@@ -345,6 +353,20 @@ class AttendEvent(ttk.Frame):
             messagebox.showinfo(
                 title="Oops!",
                 message="Make sure you entered the information correctly."
+            )
+        person_check = self.check_if_person_in_database(person_string)
+        if len(person_check) == 0:
+            messagebox.showinfo(
+                title="Not in database!",
+                message=f"{person_string} is not in the database.  You must first add {person_string} to the database "
+                        f"with the Add Person button on the Main Menu."
+            )
+        event_check = self.check_if_event_in_database(event_id_string)
+        if len(event_check) == 0:
+            messagebox.showinfo(
+                title="Not in database!",
+                message=f"The event with ID {event_id_string} is not in the database.  Use the View Events by ID "
+                        f"button on the Main Menu to see all events in the database."
             )
         else:
             database.attend_event(person_string, event_id_string)
