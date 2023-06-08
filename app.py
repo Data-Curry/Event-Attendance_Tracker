@@ -38,9 +38,9 @@ class EventAttendanceTracker(tk.Tk):
 
         self.show_frame(MainMenu)
 
-    def show_frame(self, container):
+    def show_frame(self, container):       # switches view from current frame to frame passed in container
         frame = self.frames[container]
-        frame.tkraise()
+        frame.tkraise()                    # puts this frame on top of the stack of frames
 
 
 class MainMenu(ttk.Frame):
@@ -50,37 +50,37 @@ class MainMenu(ttk.Frame):
         add_event_button = ttk.Button(
             self,
             text="Add New Event",
-            command=lambda: controller.show_frame(AddEvent)
+            command=lambda: controller.show_frame(AddEvent)  # switches to AddEvent class frame
         )
         view_upcoming_events_button = ttk.Button(
             self,
             text="View Upcoming Events",
-            command=lambda: controller.show_frame(ViewUpcomingEvents)
+            command=lambda: controller.show_frame(ViewUpcomingEvents)  # switches to ViewUpcomingEvents class frame
         )
         view_events_chronologically_button = ttk.Button(
             self,
             text="View All Events Chronologically",
-            command=lambda: controller.show_frame(ViewEventsChronologically)
+            command=lambda: controller.show_frame(ViewEventsChronologically)  # switches to ViewEventsChronologically class frame
         )
         view_events_by_id_button = ttk.Button(
             self,
             text="View All Events by ID",
-            command=lambda: controller.show_frame(ViewEventsByID)
+            command=lambda: controller.show_frame(ViewEventsByID)  # switches to ViewEventsByID class frame
         )
         attend_event_button = ttk.Button(
             self,
             text="Attend Event",
-            command=lambda: controller.show_frame(AttendEvent)
+            command=lambda: controller.show_frame(AttendEvent)  # switches to AttendEvent class frame
         )
         view_attended_events_button = ttk.Button(
             self,
             text="View Attended Events",
-            command=lambda: controller.show_frame(ViewAttendedEvents)
+            command=lambda: controller.show_frame(ViewAttendedEvents)  # switches to ViewAttendedEvents class frame
         )
         add_person_button = ttk.Button(
             self,
             text="Add New Person to this App",
-            command=lambda: controller.show_frame(AddNewPerson)
+            command=lambda: controller.show_frame(AddNewPerson)  # switches to AddNewPerson class frame
         )
         exit_app_button = ttk.Button(self, text="Exit App", command=exit)
 
@@ -128,9 +128,26 @@ class AddEvent(ttk.Frame):
         for child in self.winfo_children():
             child.grid_configure(padx=15, pady=15)
 
+    def get_events(self):
+        events = database.get_events()
+        return events
+
+    def check_if_event_in_db(self, event_string, timestamp):  # checks if event is already in db
+        event_list = self.get_events()                        # events in db is a list of tuples
+        for _id, event, event_stamp in event_list:            # iterates through elements of each tuple
+            if event_string == event and timestamp == event_stamp:
+                messagebox.showinfo(
+                    title="Event exists!",
+                    message=f"The event you entered is already in the database. It's ID: {_id}"
+                )
+                return True
+            else:
+                return False
+
     def add_new_event(self, event, event_date):
         event_string = str(event)
         event_date_string = str(event_date)
+
         if len(event_string) == 0 or len(event_date_string) == 0:
             messagebox.showinfo(title="Oops!", message="Make sure you entered the information correctly.")
         else:
@@ -140,8 +157,10 @@ class AddEvent(ttk.Frame):
                 messagebox.showinfo(title="Oops!", message="Make sure you entered the date in dd-mm-yyyy format.")
             else:
                 timestamp = parsed_date.timestamp()
-                database.add_event(event_string, timestamp)
-                messagebox.showinfo(title="Success!", message=f"{event_string} added!")
+                event_exists = self.check_if_event_in_db(event_string, timestamp)  # checks if event in db already
+                if not event_exists:
+                    database.add_event(event_string, timestamp)
+                    messagebox.showinfo(title="Success!", message=f"{event_string} added!")
 
 
 class ViewUpcomingEvents(ttk.Frame):
@@ -160,7 +179,10 @@ class ViewUpcomingEvents(ttk.Frame):
             text="Upcoming Events  --  ID: Event (Date)",
             font=("Segoe UI", 15, "bold", "underline")
         )
-        display_events_button = ttk.Button(self, text="Click to display upcoming events", command=self.get_events)
+        display_events_button = ttk.Button(
+            self,
+            text="Click to display upcoming events",
+            command=self.get_events)
         return_to_main_menu = ttk.Button(
             self,
             text="Return to Main Menu",
@@ -176,7 +198,7 @@ class ViewUpcomingEvents(ttk.Frame):
 
     def get_events(self):
         events = database.get_events(upcoming=True)
-        final_list = self.make_upcoming_event_list(events)
+        final_list = self.make_upcoming_event_list(events)  # make list into readable format
         return final_list
 
     def make_upcoming_event_list(self, events):
@@ -194,7 +216,6 @@ class ViewUpcomingEvents(ttk.Frame):
         else:
             upcoming_events = event_tuple
             self.upcoming_events_window.update_upcoming_events_widgets(upcoming_events)
-            print(upcoming_events)
             return upcoming_events
 
 
@@ -212,7 +233,10 @@ class ViewEventsChronologically(ttk.Frame):
             text="All Events Chronologically  --  ID: Event (Date)",
             font=("Segoe UI", 15, "bold", "underline")
         )
-        display_events_button = ttk.Button(self, text="Click to display events chronologically", command=self.get_events)
+        display_events_button = ttk.Button(
+            self,
+            text="Click to display events chronologically",
+            command=self.get_events)
         return_to_main_menu = ttk.Button(
             self,
             text="Return to Main Menu",
@@ -228,7 +252,7 @@ class ViewEventsChronologically(ttk.Frame):
 
     def get_events(self):
         events = database.get_events_chronologically()
-        final_list = self.make_events_chronologically_list(events)
+        final_list = self.make_events_chronologically_list(events)  # makes list into readable format
         return final_list
 
     def make_events_chronologically_list(self, events):
@@ -245,8 +269,7 @@ class ViewEventsChronologically(ttk.Frame):
             return no_duplication                          # don't return the event list again
         else:
             events_chronologically = event_tuple
-            self.events_chronologically_window.update_events_chronologically_widgets(events_chronologically)
-            print(events_chronologically)
+            self.events_chronologically_window.update_events_chronologically_widgets(events_chronologically)  # in scrollable_window.py
             return events_chronologically
 
 
@@ -282,7 +305,7 @@ class ViewEventsByID(ttk.Frame):
 
     def get_events(self):
         events = database.get_events()
-        final_list = self.make_events_by_id_list(events)
+        final_list = self.make_events_by_id_list(events)    # makes list into readable format
         return final_list
 
     def make_events_by_id_list(self, events):
@@ -298,9 +321,8 @@ class ViewEventsByID(ttk.Frame):
         if event_tuple == events_by_id:          # if the display button is clicked again,
             return no_duplication                # don't return the event list again
         else:
-            events_by_id = event_tuple + events_by_id
+            events_by_id = event_tuple
             self.events_by_id_window.update_events_by_id_widgets(events_by_id)  # method in scrollable_window.py
-            print(events_by_id)
             return events_by_id
 
 
@@ -354,14 +376,14 @@ class AttendEvent(ttk.Frame):
                 title="Oops!",
                 message="Make sure you entered the information correctly."
             )
-        person_check = self.check_if_person_in_database(person_string)
+        person_check = self.check_if_person_in_database(person_string)  # ensures db entry uses person already in db
         if len(person_check) == 0:
             messagebox.showinfo(
                 title="Not in database!",
                 message=f"{person_string} is not in the database.  You must first add {person_string} to the database "
                         f"with the Add Person button on the Main Menu."
             )
-        event_check = self.check_if_event_in_database(event_id_string)
+        event_check = self.check_if_event_in_database(event_id_string)  # ensures db entry uses event already in db
         if len(event_check) == 0:
             messagebox.showinfo(
                 title="Not in database!",
@@ -383,7 +405,6 @@ class ViewAttendedEvents(ttk.Frame):
         super().__init__(container, **kwargs)
 
         self.attended_events = ()
-        self.previous_person = ""
 
         self.attended_events_window = ViewAttendedEventsDisplayWindow(self)  # scrollable window
         self.attended_events_window.grid(column=0, row=2, sticky="NSEW")
@@ -417,10 +438,10 @@ class ViewAttendedEvents(ttk.Frame):
     def view_attended_events(self):
         person = self.person_value.get()
         events = database.get_attended_events(person)
-        final_list = self.make_attended_events_list(events)
+        final_list = self.make_attended_events_list(events)  # formats the list
         return final_list
 
-    def make_attended_events_list(self, events):
+    def make_attended_events_list(self, events):             # converts timestamps into readable dates
         global attended_events
         event_list = []
         no_duplication = ()
@@ -430,12 +451,11 @@ class ViewAttendedEvents(ttk.Frame):
             list_line = f"{_id}: {event} ({human_time})"
             event_list.append(list_line)
         event_tuple = tuple(event_list)
-        if event_tuple == attended_events:              # if display button is clicked again,
-            return no_duplication                       # don't return the event list again
+        if event_tuple == attended_events:                  # if display button is clicked again,
+            return no_duplication                           # don't return the event list again
         else:
             attended_events = event_tuple
-            self.attended_events_window.update_attended_events_widgets(attended_events)
-            print(attended_events)
+            self.attended_events_window.update_attended_events_widgets(attended_events)  # in scrollable_window.py
             return attended_events
 
 
@@ -467,6 +487,10 @@ class AddNewPerson(ttk.Frame):
         for child in self.winfo_children():
             child.grid_configure(padx=15, pady=15)
 
+    def check_if_person_in_db(self, person):
+        name_check = database.get_person(person)
+        return name_check                            # returns either the person's name or an empty tuple
+
     def add_new_person(self, person):
         person_string = str(person)
         if len(person_string) == 0:
@@ -474,7 +498,13 @@ class AddNewPerson(ttk.Frame):
                 title="Oops!",
                 message="Make sure you enter a name."
             )
-        else:
+        person_exists = self.check_if_person_in_db(person_string)  # checks if person's name is in db already
+        if person_exists:                                          # if the name is found in the database
+            messagebox.showinfo(
+                title="Name already exists!",
+                message="The person you entered is already in the database."
+            )
+        else:                                                      # if name_check returns an empty tuple
             database.add_person(person_string)
             messagebox.showinfo(
                 title="Success!",

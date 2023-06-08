@@ -28,7 +28,7 @@ class ViewUpcomingEventsDisplayWindow(tk.Canvas):                          # Thi
         self.configure(yscrollcommand=scrollbar.set)
         self.yview_moveto(1.0)
 
-    def update_upcoming_events_widgets(self, upcoming_events):  # moved here from ViewUpcomingEvents class in app.py
+    def update_upcoming_events_widgets(self, upcoming_events):  # called in ViewUpcomingEvents class in app.py
         for event in upcoming_events:
             event_label = ttk.Label(
                 self.display_frame,
@@ -64,7 +64,7 @@ class ViewEventsChronologicallyDisplayWindow(tk.Canvas):            # This makes
         self.configure(yscrollcommand=scrollbar.set)
         self.yview_moveto(1.0)
 
-    def update_events_chronologically_widgets(self, events_chronologically):  # moved here from ViewEventsChronologically class in app.py
+    def update_events_chronologically_widgets(self, events_chronologically):  # called in ViewEventsChronologically class in app.py
         for event in events_chronologically:
             event_label = ttk.Label(
                 self.display_frame,
@@ -100,7 +100,7 @@ class ViewItemsByIDDisplayWindow(tk.Canvas):                             # This 
         self.configure(yscrollcommand=scrollbar.set)
         self.yview_moveto(1.0)
 
-    def update_events_by_id_widgets(self, events_by_id):  # moved here from ViewEventsByID class in app.py
+    def update_events_by_id_widgets(self, events_by_id):  # called in ViewEventsByID class in app.py
         for event in events_by_id:
             event_label = ttk.Label(
                 self.display_frame,
@@ -136,14 +136,14 @@ class ViewAttendedEventsDisplayWindow(tk.Canvas):                          # thi
         self.configure(yscrollcommand=scrollbar.set)
         self.yview_moveto(1.0)
 
-    def delete_all_labels(self):
+    def delete_all_labels(self):                 # clears existing labels from the scrollable window
         global attended_events_forget
         for label in attended_events_forget:     # iterates through all existing labels
             label.grid_forget()                  # removes them from the grid one by one
 
         attended_events_forget = []              # resets the variable
 
-    def update_attended_events_widgets(self, attended_events):  # moved here from UpdateAttendedEvents class in app.py
+    def update_attended_events_widgets(self, attended_events):  # called in UpdateAttendedEvents class in app.py
         global attended_events_forget
         self.delete_all_labels()                 # clears existing labels from the scrollable window
         for event in attended_events:
