@@ -23,7 +23,7 @@ class ViewUpcomingEventsDisplayWindow(tk.Canvas):                          # Thi
         self.display_frame.bind("<Configure>", configure_scroll_region)
 
         scrollbar = ttk.Scrollbar(container, orient="vertical", command=self.yview)
-        scrollbar.grid(column=1, row=1,  sticky="NS")
+        scrollbar.grid(column=1, row=1, sticky="NSW")
 
         self.configure(yscrollcommand=scrollbar.set)
         self.yview_moveto(1.0)
@@ -59,7 +59,7 @@ class ViewEventsChronologicallyDisplayWindow(tk.Canvas):            # This makes
         self.display_frame.bind("<Configure>", configure_scroll_region)
 
         scrollbar = ttk.Scrollbar(container, orient="vertical", command=self.yview)
-        scrollbar.grid(column=1, row=1, sticky="NS")
+        scrollbar.grid(column=1, row=1, sticky="NSW")
 
         self.configure(yscrollcommand=scrollbar.set)
         self.yview_moveto(1.0)
@@ -95,7 +95,7 @@ class ViewItemsByIDDisplayWindow(tk.Canvas):                             # This 
         self.display_frame.bind("<Configure>", configure_scroll_region)
 
         scrollbar = ttk.Scrollbar(container, orient="vertical", command=self.yview)
-        scrollbar.grid(column=1, row=1, sticky="NS")
+        scrollbar.grid(column=1, row=1, sticky="NSW")
 
         self.configure(yscrollcommand=scrollbar.set)
         self.yview_moveto(1.0)
@@ -131,7 +131,7 @@ class ViewAttendedEventsDisplayWindow(tk.Canvas):                          # thi
         self.display_frame.bind("<Configure>", configure_scroll_region)
 
         scrollbar = ttk.Scrollbar(container, orient="vertical", command=self.yview)
-        scrollbar.grid(column=1, row=2, sticky="NS")
+        scrollbar.grid(column=1, row=2, sticky="NSW")
 
         self.configure(yscrollcommand=scrollbar.set)
         self.yview_moveto(1.0)

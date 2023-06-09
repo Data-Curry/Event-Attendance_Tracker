@@ -104,10 +104,10 @@ class AddEvent(ttk.Frame):
         self.event_value = tk.StringVar()
         self.event_date_value = tk.StringVar(value="dd-mm-yyyy")
 
-        event_label = ttk.Label(self, text="Event name")
-        event_label_input = ttk.Entry(self, width=50, textvariable=self.event_value, font=("Segoe UI", 15))
-        event_date_label = ttk.Label(self, text="Event date")
-        event_date_label_input = ttk.Entry(self, width=10, textvariable=self.event_date_value, font=("Segoe UI", 15))
+        event_label = ttk.Label(self, text="Event name", font=("Segoe UI", 15, "bold"))
+        event_label_input = ttk.Entry(self, width=45, textvariable=self.event_value, font=("Segoe UI", 15))
+        event_date_label = ttk.Label(self, text="Event date", font=("Segoe UI", 15, "bold"))
+        event_date_label_input = ttk.Entry(self, width=11, textvariable=self.event_date_value, font=("Segoe UI", 15))
         add_event_button = ttk.Button(
             self, text="Add Event",
             command=lambda: self.add_new_event(self.event_value.get(), self.event_date_value.get())
@@ -121,7 +121,7 @@ class AddEvent(ttk.Frame):
         event_label.grid(column=0, row=0, sticky="W")
         event_label_input.grid(column=1, row=0, sticky="EW")
         event_date_label.grid(column=0, row=1, sticky="W")
-        event_date_label_input.grid(column=1, row=1, sticky="EW")
+        event_date_label_input.grid(column=1, row=1, sticky="W")
         add_event_button.grid(column=0, row=2, columnspan=2, sticky="W")
         return_to_main_menu.grid(column=0, row=3, columnspan=2, sticky="W")
 
@@ -176,7 +176,7 @@ class ViewUpcomingEvents(ttk.Frame):
 
         upcoming_events_label = ttk.Label(
             self,
-            text="Upcoming Events  --  ID: Event (Date)",
+            text="           Upcoming Events  --  ID: Event (Date)           ",
             font=("Segoe UI", 15, "bold", "underline")
         )
         display_events_button = ttk.Button(
@@ -230,7 +230,7 @@ class ViewEventsChronologically(ttk.Frame):
 
         events_chronologically_label = ttk.Label(
             self,
-            text="All Events Chronologically  --  ID: Event (Date)",
+            text="   All Events Chronologically  --  ID: Event (Date)   ",
             font=("Segoe UI", 15, "bold", "underline")
         )
         display_events_button = ttk.Button(
@@ -284,7 +284,7 @@ class ViewEventsByID(ttk.Frame):
 
         events_by_id_label = ttk.Label(
             self,
-            text="All Events by ID  --  ID: Event (Date)",
+            text="             All Events by ID  --  ID: Event (Date)             ",
             font=("Segoe UI", 15, "bold", "underline")
         )
         display_events_button = ttk.Button(self, text="Click to display events by ID",
@@ -335,10 +335,10 @@ class AttendEvent(ttk.Frame):
         self.person = tk.StringVar()
         self.person_value = tk.StringVar()
 
-        event_label = ttk.Label(self, text="Event ID:")
-        event_label_input = ttk.Entry(self, width=50, textvariable=self.event_value, font=("Segoe UI", 15))
-        person_label = ttk.Label(self, text="Person's name:")
-        person_label_input = ttk.Entry(self, width=50, textvariable=self.person_value, font=("Segoe UI", 15))
+        event_label = ttk.Label(self, text="Event ID:", font=("Segoe UI", 15, "bold"))
+        event_label_input = ttk.Entry(self, width=45, textvariable=self.event_value, font=("Segoe UI", 15))
+        person_label = ttk.Label(self, text="Person's name:", font=("Segoe UI", 15, "bold"))
+        person_label_input = ttk.Entry(self, width=45, textvariable=self.person_value, font=("Segoe UI", 15))
         attend_event_button = ttk.Button(
             self,
             text="Attend Event",
@@ -350,9 +350,9 @@ class AttendEvent(ttk.Frame):
             command=lambda: controller.show_frame(MainMenu)
         )
 
-        event_label.grid(column=0, row=0, sticky="W")
+        event_label.grid(column=0, row=0, sticky="E")
         event_label_input.grid(column=1, row=0, sticky="EW")
-        person_label.grid(column=0, row=1, sticky="W")
+        person_label.grid(column=0, row=1, sticky="E")
         person_label_input.grid(column=1, row=1, sticky="EW")
         attend_event_button.grid(column=0, row=2, sticky="W")
         return_to_main_menu.grid(column=0, row=3, sticky="W")
@@ -413,9 +413,12 @@ class ViewAttendedEvents(ttk.Frame):
         self.person_value = tk.StringVar()
         self.events = tk.StringVar(value="No events attended")
 
-        person_label = ttk.Label(self, text="Person's name:")
-        person_label_input = ttk.Entry(self, width=50, textvariable=self.person_value, font=("Segoe UI", 15))
-        header = ttk.Label(self, text="ID: Event (Date)", font=("Segoe UI", 15, "bold", "underline"))
+        person_label = ttk.Label(self, text="<-- Person's name", font=("Segoe UI", 15, "bold"))
+        person_label_input = ttk.Entry(self, width=45, textvariable=self.person_value, font=("Segoe UI", 15))
+        header = ttk.Label(
+            self,
+            text="                           ID: Event (Date)",
+            font=("Segoe UI", 15, "bold"))
         view_attended_events_button = ttk.Button(
             self,
             text="View Attended Events",
@@ -426,8 +429,8 @@ class ViewAttendedEvents(ttk.Frame):
             command=lambda: controller.show_frame(MainMenu)
         )
 
-        person_label.grid(column=0, row=0, sticky="EW")
-        person_label_input.grid(column=1, row=0, sticky="EW")
+        person_label.grid(column=1, row=0, sticky="E")
+        person_label_input.grid(column=0, row=0, sticky="EW")
         header.grid(column=0, row=1, sticky="W")
         view_attended_events_button.grid(column=0, row=3, sticky="EW")
         return_to_main_menu.grid(column=1, row=3, sticky="W")
@@ -466,8 +469,9 @@ class AddNewPerson(ttk.Frame):
         self.person = tk.StringVar()
         self.person_value = tk.StringVar()
 
-        person_label = ttk.Label(self, text="New Person's Name:")
-        person_label_input = ttk.Entry(self, width=50, textvariable=self.person_value, font=("Segoe UI", 15))
+        header = ttk.Label(self, text="Add New Person", font=("Segoe UI", 15, "bold", "underline"))
+        person_label = ttk.Label(self, text="Enter New Person's Name:", font=("Segoe UI", 15, "bold"))
+        person_label_input = ttk.Entry(self, width=45, textvariable=self.person_value, font=("Segoe UI", 15))
         add_person_button = ttk.Button(
             self,
             text="Add Person",
@@ -479,10 +483,11 @@ class AddNewPerson(ttk.Frame):
             command=lambda: controller.show_frame(MainMenu)
         )
 
-        person_label.grid(column=0, row=0, sticky="W")
-        person_label_input.grid(column=0, row=1, sticky="EW")
-        add_person_button.grid(column=0, row=2, sticky="EW")
-        return_to_main_menu.grid(column=0, row=3, sticky="W")
+        header.grid(column=0, row=0, sticky="EW")
+        person_label.grid(column=0, row=1, sticky="W")
+        person_label_input.grid(column=0, row=2, sticky="EW")
+        add_person_button.grid(column=0, row=3, sticky="EW")
+        return_to_main_menu.grid(column=0, row=4, sticky="W")
 
         for child in self.winfo_children():
             child.grid_configure(padx=15, pady=15)
@@ -513,13 +518,18 @@ class AddNewPerson(ttk.Frame):
 
 
 root = EventAttendanceTracker()
-root.geometry("800x425")
+root.geometry("875x500")
 root.resizable(False, False)
 
 font.nametofont("TkDefaultFont").configure(size=15)
 
+style = ttk.Style(root)
+
 root.columnconfigure(0, weight=1)
 
 database.create_tables()
+
+style.theme_use("clam")
+# style.element_options("Button.button")
 
 root.mainloop()
