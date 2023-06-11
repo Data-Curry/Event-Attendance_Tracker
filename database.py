@@ -10,12 +10,14 @@ CREATE_EVENTS_TABLE = """CREATE TABLE IF NOT EXISTS events (
 CREATE_ATTENDED_TABLE = """CREATE TABLE IF NOT EXISTS attended (
     person_name TEXT,
     event_id INTEGER,
-    FOREIGN KEY(person_name) REFERENCES people(person_name),
+    FOREIGN KEY(person_name) REFERENCES people(person_name)
+    ON DELETE CASCADE
     FOREIGN KEY(event_id) REFERENCES events(_id)
+    ON DELETE CASCADE
 );"""
 CREATE_PEOPLE_TABLE = """CREATE TABLE IF NOT EXISTS people (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    person_name TEXT
+    person_name TEXT UNIQUE
 );"""
 
 INSERT_PERSON = "INSERT INTO people (person_name) VALUES (?);"
