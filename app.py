@@ -530,6 +530,5 @@ root.columnconfigure(0, weight=1)
 database.create_tables()
 
 style.theme_use("clam")
-# style.element_options("Button.button")
 
 root.mainloop()
